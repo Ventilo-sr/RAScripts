@@ -102,9 +102,9 @@ SaveName = {
     EU: 0x096870
 }
 
-CurrentRank = {
-    US: 0x097D14,
-    EU: 0x099A34
+CurrentPoints = {
+    US: 0x097D10,
+    EU: 0x099A30
 }
 
 EventsWon = {
@@ -157,6 +157,11 @@ InfiniteRestarts = {
     EU: 0x09AB1C
 }
 
+Gearbox = {
+    US: 0x99978,
+    EU: 0x9B608
+}
+
 CameraVerticalAngle = {
     US: 0x0ABE84,
     EU: 0x0AC7A4
@@ -170,6 +175,11 @@ Camera = {
 MaxSpeed = {
     US: 0x0BABCC,
     EU: 0x0BB4EC
+}
+
+CurrentGear = {
+    US: 0x0BB1FE,
+    EU: 0x0BBB1E
 }
 
 CurrentBestLap = {
@@ -325,6 +335,38 @@ ChampionshipParams = [
     },
 ]
 
+PointThresholds = [
+    10000,
+    25000,
+    50000,
+    100000,
+    150000,
+    200000,
+    250000,
+    300000,
+    350000,
+    400000,
+    450000,
+    550000,
+    650000,
+    800000,
+    1000000,
+    1250000,
+    1500000,
+    1750000,
+    2000000,
+    2500000,
+    3000000,
+    3750000,
+    4500000,
+    5500000,
+    6500000,
+    7750000,
+    9000000,
+    1050000,
+    1200000
+]
+
 // ACHIEVEMENTS
 achievement(
     title = "Step by Step",
@@ -332,9 +374,15 @@ achievement(
     type = "progression",
     description = "Gain a rank",
     trigger = any_of(Regions, region =>
-        (dword(CurrentRank[region]) < prev(dword(CurrentRank[region]))) &&
-        dword(IsOnResultScreen[region]) == 1
+        IsRegion(region) &&
+        dword(IsOnResultScreen[region]) == 1 &&
+        any_of(PointThresholds, target =>
+            prev(dword(CurrentPoints[region])) < target &&
+            dword(CurrentPoints[region]) >= target
+        )
     )
+    // using points instead of rank because the rank variable doesn't behave like I'd want it to
+    // same for the "Number One" achievement
 )
 
 // returns the number of races in the current championship
@@ -345,17 +393,20 @@ function races_number(region){
 // returns true at the moment you complete a championship
 function complete_championship(champ_number,region){
     return once(
-            dword(CurrentGamemode[region]) == 10 &&
-            prev(dword(CurrentGamemode[region])) != 10 &&
+            dword(Countdown[region]) == 0 &&
+            prev(dword(Countdown[region])) == 1 &&
+            dword(CurrentChampionship[region]) == champ_number &&
             dword(CurrentRace[region]) == 0
         ) &&
         never(dword(InfiniteRestarts[region]) == 1) &&
         never(dword(CurrentRace[region]) < prev(dword(CurrentRace[region]))) &&
-        dword(CurrentChampionship[region]) == champ_number &&
-        dword(CurrentRace[region]) == races_number(region) - 1 &&
-        dword(ChampionshipFirstPlace[region]) == 0 &&
-        prev(dword(ResultScreenPage[region])) == 5 &&
-        dword(ResultScreenPage[region]) == 6
+        never(dword(CurrentChampionship[region]) != champ_number) &&
+        dword(CurrentRace[region]) == (races_number(region) - 1) &&
+        trigger_when(
+            dword(ChampionshipFirstPlace[region]) == 0 &&
+            prev(dword(ResultScreenPage[region])) == 5 &&
+            dword(ResultScreenPage[region]) == 6
+        )
 }
 
 for champ in ChampionshipParams{
@@ -378,8 +429,10 @@ achievement(
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         dword(CurrentGamemode[region]) == 7 &&
-        prev(dword(LapCount[region])) == 0 &&
-        dword(LapCount[region]) == 1
+        trigger_when(
+            prev(dword(LapCount[region])) == 0 &&
+            dword(LapCount[region]) == 1
+        )
     )
 )
 
@@ -409,7 +462,7 @@ achievement(
     )
 )
 
-// returns if a race has been won uisng a specific car
+// returns true if a race has been won using a car with an id between carmin and carmax
 function win_in_car(carmin,carmax,region){
     return dword(FirstPlaceId[region]) == 0 &&
         prev(dword(IsOnResultScreen[region])) == 0 &&
@@ -570,8 +623,8 @@ achievement(
     description = "Reach Rank 1",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
-        prev(dword(CurrentRank[region])) == 2 &&
-        dword(CurrentRank[region]) == 1 &&
+        prev(dword(CurrentPoints[region])) < 12000000 &&
+        dword(CurrentPoints[region]) >= 12000000 &&
         dword(IsOnResultScreen[region]) == 1
     )
 )
@@ -643,24 +696,30 @@ achievement(
 
 achievement(
     title = "Ghostracer", points = 2,
-    description = "Drive a full lap of any track with the invisible cars cheat",
+    description = "Activate the invisible cars cheat while driving",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
-        dword(IsCarVisible[region]) == 0 &&
-        repeated(2, dword(LapCount[region]) > prev(dword(LapCount[region]))) &&
-        never(dword(WherePlayer[region]) != prev(dword(WherePlayer[region])))
+        dword(WherePlayer[region]) == 1 &&
+        prev(dword(IsCarVisible[region])) == 1 &&
+        dword(IsCarVisible[region]) == 0
     )
 )
 
 achievement(
     title = "Gonna Need Some Glasses", points = 2,
-    description = "Drive a full lap of any track with the retro graphics cheat",
+    description = "Win a race with the retro graphics cheat on for the whole race",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
-        dword(BlurryMode[region]) == 0 &&
-        repeated(2, dword(LapCount[region]) > prev(dword(LapCount[region]))) &&
+        once(
+           dword(BlurryMode[region]) == 0 &&
+           dword(Countdown[region]) == 0 &&
+           prev(dword(Countdown[region])) == 1 &&
+           dword(CurrentGamemode[region]) >= 2 &&
+           dword(CurrentGamemode[region]) <= 3
+        ) &&
         never(dword(WherePlayer[region]) != prev(dword(WherePlayer[region]))) &&
-        never(dword(BlurryMode[region]) != 0)
+        never(dword(BlurryMode[region]) != 0) &&
+        trigger_when(win_in_car(0,100,region))
     )
 )
 
@@ -697,6 +756,21 @@ achievement(
         prev(is_car_unlocked(0x22,region)) == 0 &&
         is_car_unlocked(0x22,region) == 1 &&
         dword(ResultScreenPage[region]) == 9
+    )
+)
+
+achievement(
+    title = "Toyota Prius", points = 5,
+    description = "Win a race with manual gearbox using only the 1st gear",
+    trigger = any_of(Regions, region =>
+        IsRegion(region) &&
+        once((prev(word(CurrentGear[region]))==65535) && word(CurrentGear[region])==0) &&
+        dword(FirstPlaceId[region]) == 0 &&
+        prev(dword(IsOnResultScreen[region])) == 0 &&
+        dword(IsOnResultScreen[region]) == 1 &&
+        dword(CurrentGamemode[region]) >= 2 &&
+        dword(CurrentGamemode[region]) <= 3 &&
+        never(prev(word(CurrentGear[region])==1))
     )
 )
 
@@ -783,9 +857,11 @@ achievement(
 function time_trial_req(track,time_goal,region){
     return dword(WherePlayer[region]) == 1 &&
         dword(CurrentTrack[region]) == track &&
-        float(CurrentBestLap[region]) <= time_goal &&
-        float(CurrentBestLap[region]) > (0.5 * time_goal) &&
-        dword(LapCount[region]) > prev(dword(LapCount[region]))
+        trigger_when(
+            float(CurrentBestLap[region]) <= time_goal &&
+            float(CurrentBestLap[region]) > (0.5 * time_goal) &&
+            dword(LapCount[region]) > prev(dword(LapCount[region]))
+        )
 }
 
 TimeTrials = [
