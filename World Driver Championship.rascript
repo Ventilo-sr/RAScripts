@@ -770,7 +770,7 @@ achievement(
         dword(IsOnResultScreen[region]) == 1 &&
         dword(CurrentGamemode[region]) >= 2 &&
         dword(CurrentGamemode[region]) <= 3 &&
-        never(prev(word(CurrentGear[region])==1))
+        never((prev(word(CurrentGear[region])>=1)) && (prev(word(CurrentGear[region])!=65535)))
     )
 )
 
