@@ -717,7 +717,7 @@ achievement(
            dword(CurrentGamemode[region]) >= 2 &&
            dword(CurrentGamemode[region]) <= 3
         ) &&
-        never(dword(WherePlayer[region]) != prev(dword(WherePlayer[region]))) &&
+        never(dword(MenuMode[region]) >= 8) &&
         never(dword(BlurryMode[region]) != 0) &&
         trigger_when(win_in_car(0,100,region))
     )
@@ -867,17 +867,17 @@ function time_trial_req(track,time_goal,region){
 TimeTrials = [
     {
         "title": "GT2 Hotlapper",
-        "description": "Beat a laptime of 1:52 on Lisbon BR using a GT2 car",
+        "description": "Beat a laptime of 1:54 on Lisbon BR using a GT2 car",
         "track": 28,
-        "timereq": 112.0,
+        "timereq": 114.0,
         "carmin": 0,
         "carmax": 17,
     },
     {
         "title": "GT1 Hotlapper",
-        "description": "Beat a laptime of 1:19 on Kyoto CR (EXR Mystic and Falcon Interceptor not allowed)",
+        "description": "Beat a laptime of 1:20 on Kyoto CR (EXR Mystic and Falcon Interceptor not allowed)",
         "track": 53,
-        "timereq": 79.0,
+        "timereq": 80.0,
         "carmin": 0,
         "carmax": 33,
     },
