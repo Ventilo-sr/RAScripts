@@ -875,9 +875,9 @@ TimeTrials = [
     },
     {
         "title": "GT1 Hotlapper",
-        "description": "Beat a laptime of 1:20 on Kyoto CR (EXR Mystic and Falcon Interceptor not allowed)",
+        "description": "Beat a laptime of 1:23 on Kyoto CR (EXR Mystic and Falcon Interceptor not allowed)",
         "track": 53,
-        "timereq": 80.0,
+        "timereq": 83.0,
         "carmin": 0,
         "carmax": 33,
     },
@@ -891,33 +891,33 @@ TimeTrials = [
     },
     {
         "title": "Sydney CR Time Trial",
-        "description": "Beat a laptime of 1:17 on Sydney CR",
+        "description": "Beat a laptime of 1:18 on Sydney CR",
         "track": 41,
-        "timereq": 77.0,
+        "timereq": 78.0,
         "carmin": 0,
         "carmax": 35,
     },
     {
         "title": "Kyoto AR Time Trial",
-        "description": "Beat a laptime of 0:44 on Kyoto AR",
+        "description": "Beat a laptime of 0:45 on Kyoto AR",
         "track": 51,
-        "timereq": 44.0,
+        "timereq": 45.0,
         "carmin": 0,
         "carmax": 35,
     },
     {
         "title": "New Zealand A Time Trial",
-        "description": "Beat a laptime of 1:08 on New Zealand A",
+        "description": "Beat a laptime of 1:10 on New Zealand A",
         "track": 18,
-        "timereq": 68.0,
+        "timereq": 70.0,
         "carmin": 0,
         "carmax": 35,
     },
     {
         "title": "Zurich B Time Trial",
-        "description": "Beat a laptime of 1:37 on Zurich B",
+        "description": "Beat a laptime of 1:40 on Zurich B",
         "track": 43,
-        "timereq": 97.0,
+        "timereq": 100.0,
         "carmin": 0,
         "carmax": 35,
     },
@@ -929,6 +929,30 @@ TimeTrials = [
         "carmin": 0,
         "carmax": 35,
     },
+    {
+        "title": "Hawaii C Time Trial",
+        "description": "Beat a laptime of 1:09 on Hawaii C",
+        "track": 2,
+        "timereq": 69.0,
+        "carmin": 0,
+        "carmax": 35,
+    },
+    {
+        "title": "Rome A Time Trial",
+        "description": "Beat a laptime of 1:41 on Rome A using the Rage 512 Evo C",
+        "track": 30,
+        "timereq": 101.0,
+        "carmin": 0,
+        "carmax": 0,
+    },
+    {
+        "title": "Les Gets A Time Trial",
+        "description": "Beat a laptime of 1:27 on Les Gets A",
+        "track": 6,
+        "timereq": 87.0,
+        "carmin": 0,
+        "carmax": 35,
+    }
 ]
 
 for tt in TimeTrials{
@@ -944,16 +968,6 @@ for tt in TimeTrials{
         )
     )
 }
-
-achievement(
-    title = "Something's Not Right",
-    points = 25,
-    description = "Beat the time of 1:09 on Hawaii C in the 1st lap in time trial",
-    trigger = any_of(Regions, region =>
-            IsRegion(region) &&
-            time_trial_req(2,69.0,region)
-    )
-)
 
 // LEADERBOARDS
 
