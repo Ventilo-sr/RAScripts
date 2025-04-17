@@ -939,11 +939,11 @@ TimeTrials = [
     },
     {
         "title": "Rome A Time Trial",
-        "description": "Beat a laptime of 1:41 on Rome A using the Rage 512 Evo C",
+        "description": "Beat a laptime of 1:15 on Rome A",
         "track": 30,
-        "timereq": 101.0,
+        "timereq": 75.0,
         "carmin": 0,
-        "carmax": 0,
+        "carmax": 35,
     },
     {
         "title": "Les Gets A Time Trial",
