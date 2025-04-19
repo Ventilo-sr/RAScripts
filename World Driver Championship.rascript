@@ -1038,6 +1038,7 @@ function StartLap(track){
             dword(CurrentTrack[region]) == track &&
             dword(WherePlayer[region]) == 1 &&
             dword(CurrentGamemode[region]) != 7 &&
+            dword(CurrentGamemode[region]) != 9 &&
             prev(dword(LapCount[region])) < dword(LapCount[region])
         )
 }
