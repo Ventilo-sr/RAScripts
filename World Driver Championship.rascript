@@ -253,7 +253,7 @@ ChampionshipParams = [
         "id": 8,
         "title": "Ultimatum Cup",
         "name": "Ultimatum Cup",
-        "points": 10,
+        "points": 5,
         "type": "",
     },
     {
@@ -323,7 +323,7 @@ ChampionshipParams = [
         "id": 18,
         "title": "World Champion",
         "name": "World Cup",
-        "points": 25,
+        "points": 10,
         "type": "",
     },
     {
