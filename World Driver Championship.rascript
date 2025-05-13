@@ -260,7 +260,7 @@ ChampionshipParams = [
         "id": 9,
         "title": "GT2 Champion",
         "name": "Invitational Cup - GT2",
-        "points": 25,
+        "points": 10,
         "type": "progression",
     },
     {
@@ -330,7 +330,7 @@ ChampionshipParams = [
         "id": 19,
         "title": "GT1 Champion",
         "name": "Invitational Cup - GT1",
-        "points": 25,
+        "points": 10,
         "type": "progression",
     },
 ]
@@ -464,13 +464,13 @@ achievement(
 
 // returns true if a race has been won using a car with an id between carmin and carmax
 function win_in_car(carmin,carmax,region){
-    return dword(FirstPlaceId[region]) == 0 &&
-        prev(dword(IsOnResultScreen[region])) == 0 &&
-        dword(IsOnResultScreen[region]) == 1 &&
-        dword(CurrentGamemode[region]) >= 2 &&
+    return dword(CurrentGamemode[region]) >= 2 &&
         dword(CurrentGamemode[region]) <= 3 &&
         dword(CurrentCar[region]) >= carmin &&
-        dword(CurrentCar[region]) <= carmax
+        dword(CurrentCar[region]) <= carmax &&
+        dword(FirstPlaceId[region]) == 0 &&
+        prev(dword(IsOnResultScreen[region])) == 0 &&
+        dword(IsOnResultScreen[region]) == 1
 }
 
 BrandParams = [
@@ -644,7 +644,7 @@ function cars_unlocked(region){
 }
 
 achievement(
-    title = "Collectionner",
+    title = "Collector",
     points = 25,
     description = "Unlock every car",
     trigger = any_of(Regions, region =>
@@ -671,15 +671,14 @@ achievement(
 
 achievement(
     title = "I Like Them Pink",
-    points = 1,
-    description = "Enter the password that makes all the cars pink",
+    points = 2,
+    description = "Win a race with a pink car, which you can get by using the username \"IGN64\" in championship mode",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         dword(SaveName[region]) == 1768386102 &&
         dword(SaveName[region] + 4) == 872415232 &&
         dword(SaveName[region] + 8) == 0 &&
-        prev(dword(MenuMode[region])) == 8 &&
-        dword(MenuMode[region]) == 9
+        trigger_when(win_in_car(0,100,region))
     )
 )
 
@@ -689,19 +688,34 @@ achievement(
     description = "Win a race with the small cars cheat on",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
-        win_in_car(0,100,region) &&
-        dword(SmallCars[region]) == 1
+        once(
+            prev(dword(SmallCars[region])) == 0 &&
+            dword(SmallCars[region]) == 1 &&
+            prev(dword(Countdown[region])) == 1 &&
+            dword(CurrentGamemode[region]) >= 2 &&
+            dword(CurrentGamemode[region]) <= 3
+        ) &&
+        never(dword(MenuMode[region]) >= 8) &&
+        never(dword(BlurryMode[region]) != 0) &&
+        trigger_when(win_in_car(0,100,region))
     )
 )
 
 achievement(
-    title = "Ghostracer", points = 2,
-    description = "Activate the invisible cars cheat while driving",
+    title = "Ghostracer", points = 3,
+    description = "Win a race with the invisible cars cheat on for the whole race",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
-        dword(WherePlayer[region]) == 1 &&
-        prev(dword(IsCarVisible[region])) == 1 &&
-        dword(IsCarVisible[region]) == 0
+        once(
+            prev(dword(IsCarVisible[region])) == 1 &&
+            dword(IsCarVisible[region]) == 0 &&
+            prev(dword(Countdown[region])) == 1 &&
+            dword(CurrentGamemode[region]) >= 2 &&
+            dword(CurrentGamemode[region]) <= 3
+        ) &&
+        never(dword(MenuMode[region]) >= 8) &&
+        never(dword(IsCarVisible[region]) == 1) &&
+        trigger_when(win_in_car(0,100,region))
     )
 )
 
@@ -725,26 +739,39 @@ achievement(
 
 achievement(
     title = "All Blacks",
-    points = 1,
-    description = "Make all the cars black",
+    points = 2,
+    description = "Win a race using a fully black car",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
-        prev(dword(BlackCars[region])) == 0 &&
-        dword(BlackCars[region]) == 1
+        once(
+            prev(dword(BlackCars[region])) == 0 &&
+            dword(BlackCars[region]) == 1 &&
+            prev(dword(Countdown[region])) == 1 &&
+            dword(CurrentGamemode[region]) >= 2 &&
+            dword(CurrentGamemode[region]) <= 3
+        ) &&
+        never(dword(MenuMode[region]) >= 8) &&
+        never(dword(BlurryMode[region]) != 0) &&
+        trigger_when(win_in_car(0,100,region))
     )
 )
 
 achievement(
     title = "I Can See My House from There",
-    points = 1,
-    description = "Activate the Bird's eye view",
+    points = 3,
+    description = "Win a race with the Bird's eye view cheat on for the whole race",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
-        dword(WherePlayer[region]) == 1 &&
-        prev(dword(CameraVerticalAngle[region])) < 3247439872 &&
-        dword(CameraVerticalAngle[region]) >= 3247439872 &&
-        dword(IsOnResultScreen[region]) == 0 &&
-        dword(Camera[region]) != 7
+        once(
+            dword(WherePlayer[region]) == 1 &&
+            prev(dword(CameraVerticalAngle[region])) < 3247439872 &&
+            dword(CameraVerticalAngle[region]) >= 3247439872 &&
+            dword(IsOnResultScreen[region]) == 0 &&
+            dword(Camera[region]) != 7
+        ) &&
+        never(dword(MenuMode[region]) >= 8) &&
+        never(dword(CameraVerticalAngle[region]) < 3247439872) &&
+        trigger_when(win_in_car(0,100,region))
     )
 )
 
