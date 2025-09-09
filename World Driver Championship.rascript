@@ -425,7 +425,7 @@ for champ in ChampionshipParams{
 achievement(
     title = "Getting Started",
     points = 1,
-    description = "Complete a lap in training mode",
+    description = "Complete a lap in Training mode",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         dword(CurrentGamemode[region]) == 7 &&
@@ -439,7 +439,7 @@ achievement(
 achievement(
     title = "Head Start",
     points = 5,
-    description = "Qualify in pole position in a race",
+    description = "Qualify for a race in pole position",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         dword(CurrentGamemode[region]) == 1 &&
@@ -452,7 +452,7 @@ achievement(
 achievement(
     title = "You're Winner!",
     points = 3,
-    description = "Win an arcade race",
+    description = "Win an Arcade Race",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         dword(FirstPlaceId[region]) == 0 &&
@@ -672,7 +672,7 @@ achievement(
 achievement(
     title = "I Like Them Pink",
     points = 2,
-    description = "Win a race with a pink car, which you can get by using the username \"IGN64\" in championship mode",
+    description = "Win a race with a pink car, which you can get by using the username \"IGN64\" in Championship mode",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         dword(SaveName[region]) == 1768386102 &&
@@ -685,7 +685,7 @@ achievement(
 achievement(
     title = "Micromachines",
     points = 2,
-    description = "Win a race with the small cars cheat on",
+    description = "Win a race with the Small Cars cheat on",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         once(
@@ -703,7 +703,7 @@ achievement(
 
 achievement(
     title = "Ghostracer", points = 3,
-    description = "Win a race with the invisible cars cheat on for the whole race",
+    description = "Win a race with the Invisible Cars cheat on for the whole race",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         once(
@@ -721,7 +721,7 @@ achievement(
 
 achievement(
     title = "Gonna Need Some Glasses", points = 2,
-    description = "Win a race with the retro graphics cheat on for the whole race",
+    description = "Win a race with the Retro Graphics cheat on for the whole race",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         once(
@@ -759,7 +759,7 @@ achievement(
 achievement(
     title = "I Can See My House from There",
     points = 3,
-    description = "Win a race with the Bird's eye view cheat on for the whole race",
+    description = "Win a race with the Bird's Eye View cheat on for the whole race",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         once(
@@ -777,7 +777,7 @@ achievement(
 
 achievement(
     title = "The Duel", points = 5,
-    description = "Beat and Unlock the Falcon Interceptor",
+    description = "Beat and unlock the Falcon Interceptor",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         prev(is_car_unlocked(0x22,region)) == 0 &&
@@ -811,7 +811,7 @@ function no_qual(region){
 achievement(
     title = "Fast Learner",
     points = 10,
-    description = "Win a tournament comprised of 3 races or more without doing any qualifying lap and without using any restart credit",
+    description = "Win a tournament comprised of 3 races or more without doing any qualifying laps and without using any restart credits",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         dword(CurrentChampionship[region]) > 1 &&
@@ -823,7 +823,7 @@ achievement(
 
 achievement(
     title = "Clean Sweep", points = 25,
-    description = "Win every race in a 6 race tournament, without using any restart credit",
+    description = "Win every race in a 6 race tournament, without using any restart credits",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         complete_championship(dword(CurrentChampionship[region]),region) &&
@@ -835,7 +835,7 @@ achievement(
 achievement(
     title = "The Underdog",
     points = 10,
-    description = "Finish 1st in any GT1 championship using a GT2 car, without using any restart credit",
+    description = "Finish 1st in any GT1 championship using a GT2 car, without using any restart credits",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         complete_championship(dword(CurrentChampionship[region]),region) &&
@@ -1098,4 +1098,3 @@ for index in TrackLookup{
 }
 
 //
-
