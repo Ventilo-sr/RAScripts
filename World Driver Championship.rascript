@@ -852,11 +852,11 @@ GT2 = [
     9
 ]
 
-GT1 = [
+/*GT1 = [
     17,
     20,
     23
-]
+]*/
 
 achievement(
     title = "GT2 Master",
@@ -869,6 +869,7 @@ achievement(
     )
 )
 
+/*deleted achievement (too difficult and not for the right reasons)
 achievement(
     title = "GT1 Master",
     points = 25,
@@ -878,7 +879,7 @@ achievement(
         any_of(GT1, car => dword(CurrentCar[region]) == car) &&
         complete_championship(19,region)
     )
-)
+)*/
 
 // returns true if the time trial requirements passed in parameter are met
 function time_trial_req(track,time_goal,region){
@@ -1066,26 +1067,18 @@ function StartLap(track){
             dword(WherePlayer[region]) == 1 &&
             dword(CurrentGamemode[region]) != 7 &&
             dword(CurrentGamemode[region]) != 9 &&
-            prev(dword(LapCount[region])) < dword(LapCount[region])
-        )
-}
-
-function SubmitLap(track){
-    return any_of(Regions, region =>
-            IsRegion(region) &&
-            dword(CurrentTrack[region]) == track &&
-            dword(WherePlayer[region]) == 1 &&
+            prev(dword(LapCount[region])) < dword(LapCount[region]) &&
             float(CurrentBestLap[region]) > 20.0 && 
             float(CurrentBestLap[region]) != prev(float(CurrentBestLap[region]))
         )
 }
 
+function SubmitLap(track){
+    return always_true()
+}
+
 function CancelLap(){
-    return any_of(Regions, region =>
-            IsRegion(region) &&
-            dword(WherePlayer[region]) != 1 ||
-            dword(Countdown[region]) > prev(dword(Countdown[region]))
-        )
+    return always_false()
 }
 
 for index in TrackLookup{
@@ -1105,3 +1098,4 @@ for index in TrackLookup{
 }
 
 //
+
