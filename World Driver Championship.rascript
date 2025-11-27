@@ -62,9 +62,19 @@ BlurryMode = {
     EU: 0x0802F0
 }
 
+DriverCount = {
+    US: 0x092364,
+    EU: 0x093D54
+}
+
 CurrentCar = {
     US: 0x092368,
     EU: 0x093D58
+}
+
+CarStartingSecond = {
+    US: 0x09236C,
+    EU: 0x093D5C
 }
 
 CurrentGamemode = {
@@ -425,7 +435,7 @@ for champ in ChampionshipParams{
 achievement(
     title = "Getting Started",
     points = 1,
-    description = "Complete a lap in Training mode",
+    description = "Complete a lap in training mode",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         dword(CurrentGamemode[region]) == 7 &&
@@ -439,7 +449,7 @@ achievement(
 achievement(
     title = "Head Start",
     points = 5,
-    description = "Qualify for a race in pole position",
+    description = "Qualify in pole position in a race",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         dword(CurrentGamemode[region]) == 1 &&
@@ -452,7 +462,7 @@ achievement(
 achievement(
     title = "You're Winner!",
     points = 3,
-    description = "Win an Arcade Race",
+    description = "Win an arcade race",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         dword(FirstPlaceId[region]) == 0 &&
@@ -625,7 +635,8 @@ achievement(
         IsRegion(region) &&
         prev(dword(CurrentPoints[region])) < 12000000 &&
         dword(CurrentPoints[region]) >= 12000000 &&
-        dword(IsOnResultScreen[region]) == 1
+        dword(ResultScreenPage[region]) > 5 &&
+        dword(ResultScreenPage[region]) < 8
     )
 )
 
@@ -672,7 +683,7 @@ achievement(
 achievement(
     title = "I Like Them Pink",
     points = 2,
-    description = "Win a race with a pink car, which you can get by using the username \"IGN64\" in Championship mode",
+    description = "Win a race with a pink car, which you can get by using the username \"IGN64\" in championship mode",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         dword(SaveName[region]) == 1768386102 &&
@@ -685,31 +696,31 @@ achievement(
 achievement(
     title = "Micromachines",
     points = 2,
-    description = "Win a race with the Small Cars cheat on",
+    description = "Win a race with the small cars cheat on",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         once(
             prev(dword(SmallCars[region])) == 0 &&
             dword(SmallCars[region]) == 1 &&
-            prev(dword(Countdown[region])) == 1 &&
+            dword(RaceFrameCounter[region]) < 600 &&
             dword(CurrentGamemode[region]) >= 2 &&
             dword(CurrentGamemode[region]) <= 3
         ) &&
         never(dword(MenuMode[region]) >= 8) &&
-        never(dword(BlurryMode[region]) != 0) &&
+        never(dword(SmallCars[region]) != 1) &&
         trigger_when(win_in_car(0,100,region))
     )
 )
 
 achievement(
     title = "Ghostracer", points = 3,
-    description = "Win a race with the Invisible Cars cheat on for the whole race",
+    description = "Win a race with the invisible cars cheat on for the whole race",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         once(
             prev(dword(IsCarVisible[region])) == 1 &&
             dword(IsCarVisible[region]) == 0 &&
-            prev(dword(Countdown[region])) == 1 &&
+            dword(RaceFrameCounter[region]) < 600 &&
             dword(CurrentGamemode[region]) >= 2 &&
             dword(CurrentGamemode[region]) <= 3
         ) &&
@@ -721,13 +732,12 @@ achievement(
 
 achievement(
     title = "Gonna Need Some Glasses", points = 2,
-    description = "Win a race with the Retro Graphics cheat on for the whole race",
+    description = "Win a race with the retro graphics cheat on for the whole race",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         once(
            dword(BlurryMode[region]) == 0 &&
-           dword(Countdown[region]) == 0 &&
-           prev(dword(Countdown[region])) == 1 &&
+           dword(RaceFrameCounter[region]) < 600 &&
            dword(CurrentGamemode[region]) >= 2 &&
            dword(CurrentGamemode[region]) <= 3
         ) &&
@@ -746,12 +756,12 @@ achievement(
         once(
             prev(dword(BlackCars[region])) == 0 &&
             dword(BlackCars[region]) == 1 &&
-            prev(dword(Countdown[region])) == 1 &&
+            dword(RaceFrameCounter[region]) < 600 &&
             dword(CurrentGamemode[region]) >= 2 &&
             dword(CurrentGamemode[region]) <= 3
         ) &&
         never(dword(MenuMode[region]) >= 8) &&
-        never(dword(BlurryMode[region]) != 0) &&
+        never(dword(BlackCars[region]) != 1) &&
         trigger_when(win_in_car(0,100,region))
     )
 )
@@ -759,30 +769,34 @@ achievement(
 achievement(
     title = "I Can See My House from There",
     points = 3,
-    description = "Win a race with the Bird's Eye View cheat on for the whole race",
+    description = "Win a race with the Bird's eye view cheat on for the whole race",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         once(
             dword(WherePlayer[region]) == 1 &&
-            prev(dword(CameraVerticalAngle[region])) < 3247439872 &&
-            dword(CameraVerticalAngle[region]) >= 3247439872 &&
+            dword(RaceFrameCounter[region]) < 600 &&
+            prev(dword(CameraVerticalAngle[region])) < 3245342720 &&
+            dword(CameraVerticalAngle[region]) >= 3245342720 &&
             dword(IsOnResultScreen[region]) == 0 &&
             dword(Camera[region]) != 7
         ) &&
         never(dword(MenuMode[region]) >= 8) &&
-        never(dword(CameraVerticalAngle[region]) < 3247439872) &&
+        never(dword(Camera[region]) < 3) &&
+        never(repeated(5,dword(Camera[region]) == 7)) &&
+        never(dword(RaceFrameCounter[region]) < prev(dword(RaceFrameCounter[region]))) &&
         trigger_when(win_in_car(0,100,region))
     )
 )
 
 achievement(
     title = "The Duel", points = 5,
-    description = "Beat and unlock the Falcon Interceptor",
+    description = "Beat and Unlock the Falcon Interceptor",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
-        prev(is_car_unlocked(0x22,region)) == 0 &&
-        is_car_unlocked(0x22,region) == 1 &&
-        dword(ResultScreenPage[region]) == 9
+        dword(DriverCount[region]) == 2 &&
+        dword(CarStartingSecond[region]) == 0x22 &&
+        (dword(CurrentTrack[region]) == 0 || dword(CurrentTrack[region]) == 48) &&
+        win_in_car(0x21,0x21,region)
     )
 )
 
@@ -811,7 +825,7 @@ function no_qual(region){
 achievement(
     title = "Fast Learner",
     points = 10,
-    description = "Win a tournament comprised of 3 races or more without doing any qualifying laps and without using any restart credits",
+    description = "Win a tournament comprised of 3 races or more without doing any qualifying lap and without using any restart credit",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         dword(CurrentChampionship[region]) > 1 &&
@@ -823,7 +837,7 @@ achievement(
 
 achievement(
     title = "Clean Sweep", points = 25,
-    description = "Win every race in a 6 race tournament, without using any restart credits",
+    description = "Win every race in a 6 race tournament, without using any restart credit",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         complete_championship(dword(CurrentChampionship[region]),region) &&
@@ -835,7 +849,7 @@ achievement(
 achievement(
     title = "The Underdog",
     points = 10,
-    description = "Finish 1st in any GT1 championship using a GT2 car, without using any restart credits",
+    description = "Finish 1st in any GT1 championship using a GT2 car, without using any restart credit",
     trigger = any_of(Regions, region =>
         IsRegion(region) &&
         complete_championship(dword(CurrentChampionship[region]),region) &&
@@ -888,7 +902,7 @@ function time_trial_req(track,time_goal,region){
         trigger_when(
             float(CurrentBestLap[region]) <= time_goal &&
             float(CurrentBestLap[region]) > (0.5 * time_goal) &&
-            dword(LapCount[region]) > prev(dword(LapCount[region]))
+            prev(float(CurrentBestLap[region])) != float(CurrentBestLap[region])
         )
 }
 
