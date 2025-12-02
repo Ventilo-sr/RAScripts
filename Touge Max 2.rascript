@@ -393,7 +393,7 @@ achievement(
     trigger = (
             (
                 contextState() == 1 && 
-                currentGamemode() == 1
+                currentGamemode() == 1 // if last car unlocked is a collectable
             ) ||
             (once(
                     prev(successStatus()) == 0 &&
@@ -401,14 +401,17 @@ achievement(
                 ) &&
                 currentGamemode() == 4 &&
                 never(contextState() == 0) &&
-                never(storySubMenu() != 0)
+                never(storySubMenu() != 0) // if last car unlocked is a story reward
             ) ||
             (
                 currentGamemode() == 5 &&
                 never(contextState() == 0) &&
                 never(schoolSubMenu() != 0) &&
-                currentSchoolExam() == 0x17
-            )
+                currentSchoolExam() == 0x17 // if last car unlocked is a school test reward
+            ) ||
+            (currentGamemode() == 0) &&
+            contextState() == 1 &&
+            currentTrack() == 8 // if last car unlocked is Tsuchiya's F1
         ) &&
         prev(totalCarsUnlocked() == 59) &&
         totalCarsUnlocked() == 60
@@ -528,9 +531,11 @@ achievement(
         currentGamemode() == 0 &&
         currentHeat() == 2 &&
         currentCar() <= 0x07 &&
-        racePosition() == 1 &&
-        prev(hasFinished()) == 0 &&
-        trigger_when(hasFinished() == 1)
+        trigger_when(
+            racePosition() == 1 &&
+            prev(hasFinished()) == 0 &&
+            hasFinished() == 1
+        )
 )
 
 // Story Heat 1 w/ 80% health remaining
@@ -554,7 +559,7 @@ achievement(
     trigger = contextState() == 1 &&
         currentGamemode() == 4 &&
         currentStoryMission() == 3 &&
-        gameTimer() < 60000 &&
+        gameTimer() < 6000 &&
         prev(successStatus() == 0) &&
         trigger_when(successStatus() == 1)
 )
@@ -595,9 +600,11 @@ for it in SpecialsPoints{
         trigger = contextState() == 1 &&
             currentGamemode() == 0 &&
             currentCar() == it["CarID"] &&
+            trigger_when(
             racePosition() == 1 &&
             prev(hasFinished()) == 0 &&
-            trigger_when(hasFinished() == 1)
+            hasFinished() == 1
+        )
     )
 }
 
@@ -654,18 +661,18 @@ TimeTrials = [
     },
     {
         "Title": "When in doubt, Flat Out",
-        "Desc": "2:10 in Rock Island using the 4WD_IMP (route left, any condition)",
+        "Desc": "2:07 in Rock Island using the 4WD_IMP (route left, any condition)",
         "TrackID": 6,
         "CarID": 0x27,
-        "TimeReq": 7800,
+        "TimeReq": 7620,
         "RouteID": 1,
     },
     {
         "Title": "Family Trip",
-        "Desc": "2:18 in Dirt Way using the 4WD_STAG (route right, any condition)",
+        "Desc": "2:16 in Dirt Way using the 4WD_STAG (route right, any condition)",
         "TrackID": 7,
         "CarID": 0x2c,
-        "TimeReq": 8280,
+        "TimeReq": 8160,
         "RouteID": 0,
     },
     {
@@ -834,8 +841,8 @@ SchoolLookup = {
 }
 
 RouteLookup = {
-    0x00: "Right",
-    0x01: "Left",
+    0x00: "right",
+    0x01: "left",
 }
 
 // RICH PRESENCE
@@ -929,8 +936,9 @@ function Submit() => always_true()
 leaderboard(
     "Highest Drift Combo",
     "Achieve the highest drift score",
-    prev(contextState() == 1) &&
-    contextState() != 1 &&
+    contextState() == 1 &&
+    prev(hasPlayerControl() == 1) &&
+    hasPlayerControl() == 0 &&
     maxDriftPoints() != 0,
     Cancel(),
     Submit(),
@@ -959,55 +967,46 @@ for track in TrackLookup{
 ExamsData = [
     {
         "ID1": 0x00,
-        "ID2": 0x64,
         "Name": "1-1",
         "Type": "time",
     },
     {
         "ID1": 0x01,
-        "ID2": 0x65,
         "Name": "1-2",
         "Type": "time",
     },
     {
         "ID1": 0x02,
-        "ID2": 0x66,
         "Name": "1-3",
         "Type": "drift score",
     },
     {
         "ID1": 0x03,
-        "ID2": 0x67,
         "Name": "1-4",
         "Type": "time",
     },
     {
         "ID1": 0x04,
-        "ID2": 0x68,
         "Name": "1-5",
         "Type": "time",
     },
     {
         "ID1": 0x0a,
-        "ID2": 0x6e,
         "Name": "2-1",
         "Type": "time",
     },
     {
         "ID1": 0x0b,
-        "ID2": 0x6f,
         "Name": "2-2",
         "Type": "time",
     },
     {
         "ID1": 0x0c,
-        "ID2": 0x70,
         "Name": "2-3",
         "Type": "time",
     },
     {
         "ID1": 0x0d,
-        "ID2": 0x71,
         "Name": "2-4",
         "Type": "time",
     },
@@ -1019,25 +1018,21 @@ ExamsData = [
     },
     {
         "ID1": 0x14,
-        "ID2": 0x78,
         "Name": "3-1",
         "Type": "drift score",
     },
     {
         "ID1": 0x15,
-        "ID2": 0x79,
         "Name": "3-2",
         "Type": "average speed",
     },
     {
         "ID1": 0x16,
-        "ID2": 0x7a,
         "Name": "3-3",
         "Type": "time",
     },
     {
         "ID1": 0x17,
-        "ID2": 0x7b,
         "Name": "3-4",
         "Type": "time",
     },
@@ -1052,11 +1047,12 @@ function StartExam(exam) => contextState() == 1 &&
     currentGamemode() == 5 &&
     (
         currentSchoolExam() == exam ||
-        currentSchoolExam() == exam + 100
+        currentSchoolExam() == exam + 100 // for round 2
     ) &&
     prev(successStatus() == 0) &&
     successStatus() == 1
 
+// School exams leaderboards, with a different type of value submitted  depending on the type of test
 for it in ExamsData{
     if(it["Type"] == "time"){
         score = gameTimer()*5/3
@@ -1106,4 +1102,3 @@ for it in StoryLookup{
         lower_is_better = true
     )
 }
-
