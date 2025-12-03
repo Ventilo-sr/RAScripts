@@ -506,6 +506,7 @@ achievement(
         currentGamemode() != 1 &&
         currentGamemode() < 3 &&
         never(driftHealth() == 0) &&
+        never(prev(wallHits()) < wallHits()) &&
         prev(successStatus() == 0) &&
         trigger_when(successStatus() == 1)
 )
@@ -1102,3 +1103,4 @@ for it in StoryLookup{
         lower_is_better = true
     )
 }
+
