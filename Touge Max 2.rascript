@@ -179,7 +179,7 @@ for exam in ExamList{
 
 StoryTitles = [
     {
-        "Title": "Not wasting any Time",
+        "Title": "Not Wasting Any Time",
         "Desc": "Deliver the waste in time in Heat 1 of the Story",
         "MissionID": 0,
     },
@@ -189,7 +189,7 @@ StoryTitles = [
         "MissionID": 1,
     },
     {
-        "Title": "What could go wrong?",
+        "Title": "What Could Go Wrong?",
         "Desc": "Reach the bottom of the mountain without crashing in Heat 3 of the Story",
         "MissionID": 2,
     },
@@ -355,13 +355,13 @@ CarsCollection = [
     {
         "TrackID": 7,
         "Track": "Dirt Way",
-        "Title": "I dig it!",
+        "Title": "I Dig It!",
         "CarID": 0x39,
     },
     {
         "TrackID": 8,
         "Track": "Short Track",
-        "Title": "This is Road Legal I swear",
+        "Title": "This is Road Legal I Swear",
         "CarID": 0x1b,
     },
     {
@@ -414,7 +414,7 @@ achievement(
             currentTrack() == 8 // if last car unlocked is Tsuchiya's F1
         ) &&
         prev(totalCarsUnlocked() == 59) &&
-        totalCarsUnlocked() == 60
+        measured(totalCarsUnlocked() == 60)
 )
 
 // Challenge Achievements
@@ -432,7 +432,7 @@ achievement(
 
 // 320km/h
 achievement(
-    title = "Speed, I am Speed",
+    title = "Speed, I Am Speed",
     points = 5,
     description = "Reach 320 km/h",
     trigger = contextState() == 1 &&
@@ -496,7 +496,7 @@ achievement(
 achievement(
     title = "Stay Sideways",
     points = 10,
-    description = "Complete a race without ever losing your drift combo",
+    description = "Complete a race or time trial without ever losing your drift combo",
     trigger = contextState() == 1 &&
         once(
             prev(currentDriftPoints()) == 0 &&
@@ -661,7 +661,7 @@ TimeTrials = [
         "RouteID": 0,
     },
     {
-        "Title": "When in doubt, Flat Out",
+        "Title": "When in Doubt, Flat Out",
         "Desc": "2:07 in Rock Island using the 4WD_IMP (route left, any condition)",
         "TrackID": 6,
         "CarID": 0x27,
@@ -685,7 +685,7 @@ TimeTrials = [
         "RouteID": 0,
     },
     {
-        "Title": "Nothing more to learn",
+        "Title": "Nothing More to Learn",
         "Desc": "1:22 in School Zone using the MR_F-CAR (route left, any condition)",
         "TrackID": 9,
         "CarID": 0x1c,
@@ -842,8 +842,8 @@ SchoolLookup = {
 }
 
 RouteLookup = {
-    0x00: "right",
-    0x01: "left",
+    0x00: "Right",
+    0x01: "Left",
 }
 
 // RICH PRESENCE
@@ -951,7 +951,7 @@ for track in TrackLookup{
     for route in RouteLookup{
         leaderboard(
             TrackLookup[track] + " Best Time (Route " + RouteLookup[route] + ")",
-            "Fastest time on " + TrackLookup[track] + " (Route" + RouteLookup[route] + ") in time attack",
+            "Fastest time on " + TrackLookup[track] + " (Route " + RouteLookup[route] + ") in time attack",
             StartTT(track,route),
             Cancel(),
             Submit(),
@@ -1072,7 +1072,7 @@ for it in ExamsData{
     }
     
     leaderboard(
-        "School " + it["Name"] + " high score",
+        "School " + it["Name"] + " High Score",
         "Best " + it["Type"] + " on school test " + it["Name"],
         StartExam(it["ID1"]),
         Cancel(),
@@ -1103,4 +1103,3 @@ for it in StoryLookup{
         lower_is_better = true
     )
 }
-
