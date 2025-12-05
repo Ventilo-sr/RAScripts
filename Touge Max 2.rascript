@@ -414,7 +414,7 @@ achievement(
             currentTrack() == 8 // if last car unlocked is Tsuchiya's F1
         ) &&
         prev(totalCarsUnlocked() == 59) &&
-        measured(totalCarsUnlocked() == 60)
+        measured(totalCarsUnlocked() == 60, when=contextState() < 8)
 )
 
 // Challenge Achievements
@@ -1103,3 +1103,4 @@ for it in StoryLookup{
         lower_is_better = true
     )
 }
+
