@@ -539,17 +539,18 @@ achievement(
         )
 )
 
-// Story Heat 1 w/ 80% health remaining
+// Story Heat 1 w/ 75% health remaining
 achievement(
     title = "Careful Driving",
     points = 10,
-    description = "Complete Heat 1 of the story with at least 80% of health left",
+    description = "Complete Heat 1 of the story with at least 75% of health left",
     trigger = contextState() == 1 &&
         currentGamemode() == 4 &&
         currentStoryMission() == 0 &&
-        truckHealth() >= 480 && // max is 258(16)=600(10)
+        measured(truckHealth() <= 600, format="percent") && // for health display
+        truckHealth() >= 450 &&
         prev(successStatus() == 0) &&
-        trigger_when(successStatus() == 1)
+        trigger_when(successStatus() == 1),
 )
 
 // Story Heat 4 in under 1:40 (subject to adjustments)
@@ -1103,4 +1104,5 @@ for it in StoryLookup{
         lower_is_better = true
     )
 }
+
 
